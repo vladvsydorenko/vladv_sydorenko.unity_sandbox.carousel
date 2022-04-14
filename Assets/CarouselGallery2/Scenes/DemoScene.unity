@@ -243,8 +243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0124304e33ffa224688114d50ad4bb55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SafeArreaOffset: 200
-  RenderArreaOffset: 400
+  SafeArreaOffset: 600
+  RenderArreaOffset: 800
   Orientation: 0
   ItemViewPrefab: {fileID: 3081957568064164169, guid: 356b328c712464248991f6cb8fd1adf5, type: 3}
   ScrollViewRef: {fileID: 0}
@@ -527,7 +527,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.35996616}
+  m_AnchorMax: {x: 1, y: 0.5200341}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace VladvSydorenko.UnitySandbox.Assets.CarouselGallery2.Scripts
 {
-
     public class GalleryView : UIBehaviour
     {
         public enum ScrollOrientation
