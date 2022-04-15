@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery.Scripts
+namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
 {
-    public class ImageCarouselItemView : ImageCarouselItemViewBase
+    public class CarouselItemView : CarouselItemViewBase
     {
         public override void SetImage(Sprite sprite)
         {

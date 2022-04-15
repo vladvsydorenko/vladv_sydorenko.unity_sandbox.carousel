@@ -249,6 +249,25 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery.Scripts
                 _isDirty = false;
             }
         }
+
+        [ContextMenu("DestroyImages")]
+        private void DestroyImages()
+        {
+            for (int i = 0; i < _views.Count; i++)
+            {
+                var view = _views[i];
+                if (view == null)
+                {
+                    continue;
+                }
+
+                DestroyImmediate(view.gameObject);
+            }
+
+            _views.Clear();
+        }
+
+        [ContextMenu("RenderImages")]
         private void RenderImages()
         {
             var safeExtraSpace = (_imageSizeScaled.magnitude * SafeExtraSpace);
