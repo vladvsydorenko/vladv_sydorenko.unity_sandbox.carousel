@@ -40,7 +40,7 @@ box-shadow: 0 0 20px #000;border-radius: 11px;}
 
 #unity-footer {
     display: flex;
-    padding: 0.2em;
+    padding: 0.2em 1em;
     /* font-size: 1em; */
 flex-direction: row;justify-content: space-around;align-items: center;/* color: #eee; */}
 
