@@ -1,4 +1,4 @@
-# Image Gallery
+# Image Gallery Test
 
 This is a quick test implementation of image gallery with infinite virtual scrolling.
 
