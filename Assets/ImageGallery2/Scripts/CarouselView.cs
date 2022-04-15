@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -19,6 +20,8 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
         [Serializable]
         private struct StateData
         {
+            public bool IsDirty;
+
             public ScrollRect ScrollView;
             public RectTransform ContentElement;
             public RectTransform ViewportElement;
@@ -38,8 +41,10 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
         #region Settings
         [Header("Settings")]
         public bool UpdateInEditor;
+        public bool Enabled;
         public ScrollOrientation Orientation;
         public CarouselItemViewBase ItemViewPrefab;
+        public RectTransform DisabledOverlay;
         [Header("Settings: Items")]
         public Vector2 ItemSize;
         public Vector2 ItemPadding;
@@ -51,6 +56,11 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
         public GalleryItemData[] Items;
         #endregion
 
+        #region Events
+        [Header("Events")]
+        public UnityEvent<int> OnItemSelect;
+        #endregion
+
         #region State
         [Header("State")]
         // number of item being redering
@@ -59,8 +69,28 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
         #endregion
 
         #region Lifecycle
+        protected override void Start()
+        {
+            if (!enabled || !gameObject.activeSelf)
+            {
+                return;
+            }
+
+            if (Application.isEditor && !UpdateInEditor)
+            {
+                return;
+            }
+
+            UpdateScrollView();
+            SubcribeToViews();
+        }
         private void Update()
         {
+            if (!enabled || !gameObject.activeSelf)
+            {
+                return;
+            }
+
             if (Application.isEditor && !UpdateInEditor)
             {
                 return;
@@ -73,19 +103,45 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
             DeactivateUnusedViews();
             UpdateItemState();
             UpdateViews();
+
+            UpdateOverlays();
         }
         public void SetLayoutHorizontal()
         {
+            if (!enabled || !gameObject.activeSelf)
+            {
+                return;
+            }
+
             if (Application.isEditor && !UpdateInEditor)
             {
                 return;
             }
+
+            UpdateItemState();
+
+            // set dirty as layout have changed
+            _state.IsDirty = true;
         }
 
         public void SetLayoutVertical()
         {
         }
 
+        protected override void OnDestroy()
+        {
+            _state.ScrollView?.onValueChanged.RemoveListener(OnScrollViewValueChanged);
+        }
+        #endregion
+
+        #region Overlay
+        private void UpdateOverlays()
+        {
+            if (DisabledOverlay != null)
+            {
+                DisabledOverlay.gameObject.SetActive(!Enabled);
+            }
+        }
         #endregion
 
         #region ScrollView
@@ -106,16 +162,42 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
             }
 
             _state.ScrollView.movementType = ScrollRect.MovementType.Unrestricted;
-            _state.ScrollView.horizontal = Orientation == ScrollOrientation.Horizontal;
-            _state.ScrollView.vertical = !_state.ScrollView.horizontal;
+
+            _state.ScrollView.horizontal = !Enabled ? false : Orientation == ScrollOrientation.Horizontal;
+            _state.ScrollView.vertical = !Enabled ? false : !_state.ScrollView.horizontal;
+        }
+        private void SubscribeToScrollViewEvents()
+        {
+            if (_state.ScrollView == null)
+            {
+                return;
+            }
+
+            _state.ScrollView.onValueChanged.AddListener(OnScrollViewValueChanged);
+        }
+        private void OnScrollViewValueChanged(Vector2 scrollValue)
+        {
+            if (!enabled || !gameObject.activeSelf)
+            {
+                return;
+            }
+
+            UpdateItemState();
+            UpdateViews();
         }
         #endregion
 
         #region Items
         private void UpdateItemState()
         {
-            if (_state.ViewportElement == null || _state.ContentElement == null)
+            if (_state.ViewportElement == null || _state.ContentElement == null || Items == null)
             {
+                return;
+            }
+
+            if (Items.Length < 1)
+            {
+                _state.ActiveItems = 0;
                 return;
             }
 
@@ -133,6 +215,8 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
             _state.ItemScaledSize = ItemSize * scale;
             _state.ItemScaledPadding = ItemPadding * scale;
             _state.ItemCursor = _state.ItemScaledSize;
+
+            Vector2 firstItemPosition = Vector2.zero;
 
             if (Orientation == ScrollOrientation.Horizontal)
             {
@@ -153,7 +237,7 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
                 }
 
                 _state.FirstItem = index;
-                _state.FirstItemPosition.Set(offsetX + localOffsetX, _state.ContentElement.anchoredPosition.y);
+                firstItemPosition.Set(offsetX + localOffsetX, _state.ContentElement.anchoredPosition.y);
             }
             else
             {
@@ -175,8 +259,15 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
                 }
 
                 _state.FirstItem = index;
-                _state.FirstItemPosition.Set(_state.ContentElement.anchoredPosition.x, offsetY + localOffsetY);
+                firstItemPosition.Set(_state.ContentElement.anchoredPosition.x, offsetY + localOffsetY);
             }
+
+            if (!firstItemPosition.Equals(_state.FirstItemPosition))
+            {
+                _state.IsDirty = true;
+            }
+
+            _state.FirstItemPosition = firstItemPosition;
         }
         #endregion
 
@@ -193,6 +284,7 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
             if (_state.ItemViews.Count < _state.ActiveItems)
             {
                 CreateViews(_state.ActiveItems - _state.ItemViews.Count);
+                SubcribeToViews();
             }
         }
         private void CreateViews(int count)
@@ -204,7 +296,8 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
 
             for (int i = 0; i < count; i++)
             {
-                _state.ItemViews.Add(Instantiate(ItemViewPrefab, _state.ContentElement));
+                var view = Instantiate(ItemViewPrefab, _state.ContentElement);
+                _state.ItemViews.Add(view);
             }
         }
 
@@ -262,7 +355,7 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
 
         private void UpdateViews()
         {
-            if (Items == null || _state.ItemViews == null)
+            if (!_state.IsDirty || Items == null || _state.ItemViews == null || Items.Length < 1)
             {
                 return;
             }
@@ -291,12 +384,39 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
                     continue;
                 }
 
+                view.Id = item.Id;
                 view.SetImage(item.Image);
                 view.SetLayout(position + paddingCursor, size - (padding * 2f));
 
                 position += cursor;
                 // next index, looping
                 itemIndex = (itemIndex + 1) % Items.Length;
+            }
+
+            _state.IsDirty = false;
+        }
+
+        private void OnItemClick(int id)
+        {
+            OnItemSelect.Invoke(id);
+        }
+
+        private void SubcribeToViews()
+        {
+            if (_state.ItemViews == null)
+            {
+                return;
+            }
+
+            foreach (var view in _state.ItemViews)
+            {
+                if (view == null)
+                {
+                    continue;
+                }
+
+                view.OnClick.RemoveListener(OnItemClick);
+                view.OnClick.AddListener(OnItemClick);
             }
         }
 
@@ -326,6 +446,7 @@ namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
             }
 
             _state.ItemViews.Clear();
+            _state.IsDirty = true;
         }
         #endregion
     }

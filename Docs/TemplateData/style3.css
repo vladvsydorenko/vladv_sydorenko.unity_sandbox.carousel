@@ -1,0 +1,203 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+h1, h2, h3, h4, h5 {
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  display: flex;
+
+
+  width: 100%;
+  height: 100%;
+
+  background: #444;
+  flex-direction: column;align-items: center;justify-content: center;
+}
+
+.root {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 100%;
+  max-width: 1920px;
+  max-height: 1920px;
+
+  font-size: 1em;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+  box-shadow: 0 0 10px #222;
+}
+.root > .player {
+  flex-grow: 1;
+}
+
+.downloads {
+  display: flex;
+flex-wrap: wrap;/* display: none; */}
+.downloads > a {
+  display: flex;
+  align-items: center;
+
+  padding: 0.4em;color: #eee;
+font-size: 0.9em;text-decoration: none;}
+
+.player {
+  background: #ccc;
+  background: url('webgl-logo.png') no-repeat center;
+}
+
+.navbar {
+  display: flex;/* padding: 0.3em; */
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  color: #FFD500;
+  background: linear-gradient(0deg, rgba(2,0,36,0) 0%, rgba(0,91,187,1) 100%);
+  box-shadow: 0 0 10px #333;
+background: #1056a0;/* display: none; */}
+
+.header {
+  padding: 0.4em;display: flex;
+flex-wrap: wrap;align-content: center;}
+
+.header > h1 {
+  display: flex;font-size: 1em;
+align-items: center;/* justify-content: space-evenly; */}
+
+.header > h2 {
+  display: flex;color: #fff;
+  font-size: 0.8em;
+/* text-align: end; *//* align-items: center; *//* justify-content: center; */}
+
+.header > h1 > .icon {
+  display: inline-block;width: 2em;
+  height: 2em;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;background-image: url(./icon@64x64.png);
+display: none;}
+
+.webgl-logo-wrapper {
+  padding: 0!important;display: flex;/* flex-grow: 1; */
+/* align-items: stretch; *//* justify-content: space-between; *//* align-content: stretch; */flex-direction: row;}
+.webgl-logo {
+  padding: 1em;/* flex-grow: 1; *//* width: 100%; *//* height: 100%; */
+  background: url('icon@64x64.png') no-repeat center;
+  background-size: contain;
+}
+
+@media (max-aspect-ratio: 10/9) {
+  .root {
+    flex-direction: column-reverse;
+  }
+
+  .downloads {
+    flex-direction: row;
+  justify-content: flex-start;background: #FFD500;color: #005bbb;}
+  .downloads > a {
+    color: #005bbb;padding-right: 0.4em;
+  flex-grow: 1;/* background: #444; */}
+
+  .header {
+    flex-direction: column;
+    justify-content: space-between;
+  /* background: #333; */}
+  .navbar {
+    flex-direction: column;
+    padding: 0;justify-content: space-between;
+  }
+
+  .toolbar {
+    flex-direction: row;
+  box-shadow: 0 -10px 10px #333;}
+
+  .fullscreen-button {
+    /* transform: rotate(-90deg); */
+  }
+}
+
+@media (min-aspect-ratio: 10/9) {
+  .root {
+    flex-direction: row-reverse;
+  }
+
+  .downloads {
+    flex-direction: column;
+  /* color: #005BBB; */background: #FFD500;/* border-right: 2px solid #005BBB; */}
+  .downloads > a {
+    color: #005BBB;padding-top: 0.4em;
+  }
+  .header {
+    flex-direction: column;
+    padding-right: 0.8em;
+  }
+  .navbar {
+    /* border-right: 2px solid #FFD500; */
+    flex-direction: column;
+    width: 240px;
+  /* background: linear-gradient(-90deg, rgba(2,0,36,0) 0%, rgba(0,91,187,1) 100%); */}
+
+  .toolbar {
+    flex-direction: column;
+  display: flex;box-shadow: -10px 0 10px #333;}
+
+  .webgl-logo {
+  /* transform: rotate(90deg); *//* width: 100%; */
+    /* height: 100%; *//* display: none; */}
+
+  .webgl-logo-wrapper {
+    flex-direction: column;
+  }
+
+  .header > h1, .header > h2 {
+    justify-content: start;
+  }
+
+}
+
+.text {
+  padding: 0!important;
+}
+.toolbar {
+  display: flex;
+
+
+
+
+  padding: 0.2em;
+  /* padding: 0.2em; */
+
+  background: linear-gradient(180deg, rgba(2,0,36,0) 0%, #FFD500 100%);
+  background: #274664;
+
+  /* box-shadow: 0 0 10px #333; */
+justify-content: space-between;}
+
+.toolbar > div {
+  padding: 1em;
+  /* width: 1.6em;
+  height: 1.6em; */
+}
+
+.fullpage-button {
+  justify-self: flex-end;background: url(./fullscreen-button.png) no-repeat center;
+  background-size: contain;
+}
+
+.fullscreen-button {
+  /* flex-grow: 1; */padding: 1em;background: url(./expand.png) no-repeat top;
+  background-size: contain;
+}
+
+.description {
+  /* max-width: 800px; */overflow: auto;/* padding: 0.4em; */
+  color: #ccc;
+  font-size: 1em;
+/* text-align: right; */}

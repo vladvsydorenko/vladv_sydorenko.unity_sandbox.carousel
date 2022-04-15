@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace VladvSydorenko.UnitySandbox.Assets.ImageGallery2.Scripts
 {
     public class CarouselItemView : CarouselItemViewBase
     {
+        public override void OnPointerClick(PointerEventData eventData)
+        {
+            OnClick.Invoke(Id);
+        }
+
         public override void SetImage(Sprite sprite)
         {
             if (ImageRef == null)

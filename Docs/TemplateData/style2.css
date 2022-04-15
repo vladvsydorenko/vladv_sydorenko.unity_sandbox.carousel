@@ -1,0 +1,119 @@
+:root {
+  --page--max-width: 1920px;
+  --page--max-height: 1920px;
+
+  --game-header--max-width: 200px;
+  --game-header--max-height: 10%;
+
+  --war--max-width: 30%;
+  --war--max-height: 30%;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* WRAPPER */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  overflow: scroll;
+  width: 100%;
+  height: 100%;
+
+  background: #555;
+}
+
+.wrapper > div {
+  flex-grow: 1;
+}
+
+/* PAGE */
+.page {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  max-width: var(--page--max-width);
+  max-height: var(--page--max-height);
+}
+
+.page > div {
+  flex-grow: 1;
+}
+
+/* .portrait .page {
+  flex-direction: column;
+} */
+/* .landscape .page {
+  flex-direction: row;
+} */
+
+@media (max-aspect-ratio: 1/1) {
+  .page {
+    flex-direction: column;
+  }
+}
+
+@media (min-aspect-ratio: 1/1) {
+  .page {
+    flex-direction: row;
+  }
+}
+
+/* GAME */
+.game {
+  display: flex;
+  flex-direction: column;
+}
+.game > div:nth-child(1) {
+  display: flex;
+  flex-grow: 1;
+}
+.game > div:nth-child(2) {
+  display: flex;
+  flex-grow: 1;
+}
+
+.game > .header {
+  max-height: var(--game-header--max-height);
+
+  background: yellow;
+}
+
+.game > .content {
+  background: pink;
+}
+
+/* WAR */
+.war {
+  background: red;
+}
+/* .portrait .war {
+  max-height: var(--war--max-height);
+}
+.landscape .war {
+  max-width: var(--war--max-width);
+} */
+
+@media (max-aspect-ratio: 1/1) {
+  .war {
+    max-height: var(--war--max-height);
+  }
+}
+
+@media (min-aspect-ratio: 1/1) {
+  .war {
+    max-width: var(--war--max-width);
+  }
+}
+
+
+@media (max-aspect-ratio: 1/1) {
+}
