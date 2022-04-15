@@ -1,6 +1,6 @@
 function startUnityHandler() {
   var pathPrefix = "./";
-  var buildUrl = pathPrefix + "WebGL/Build";
+  var buildUrl = pathPrefix + "WebGL/PublicBuild";
   var loaderUrl = buildUrl + "/WebGL.loader.js";
   var config = {
     dataUrl: buildUrl + "/WebGL.data",
